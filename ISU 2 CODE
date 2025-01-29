@@ -1,0 +1,63 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+def calculate_stats(data):
+    mean = np.mean(data)
+    median = np.median(data)
+    mode_result = stats.mode(data)
+    mode = mode_result.mode[0] if isinstance(mode_result.mode, np.ndarray) else mode_result.mode 
+    return mean, median, mode
+
+def box_and_whisker_plot(data, title):
+    plt.boxplot(data)
+    plt.title(title)
+    plt.xlabel('Data')
+    plt.ylabel('Value')
+
+def process_data():
+    data_input = input("Enter two datasets separated by a semicolon (e.g., 5,8,7,4; 10,12,15): ")
+    
+    # Split the input into two separate datasets based on the semicolon
+    dataset1, dataset2 = data_input.split(';')
+
+    # Convert the string inputs to lists of integers
+    data1 = list(map(int, dataset1.split(',')))
+    data2 = list(map(int, dataset2.split(',')))
+
+    # Sort both datasets
+    sorted_data1 = sorted(data1)
+    sorted_data2 = sorted(data2)
+
+    # Calculate stats for both datasets
+    sorted_mean1, sorted_median1, sorted_mode1 = calculate_stats(sorted_data1)
+    sorted_mean2, sorted_median2, sorted_mode2 = calculate_stats(sorted_data2)
+
+    unsorted_mean1, unsorted_median1, unsorted_mode1 = calculate_stats(data1)
+    unsorted_mean2, unsorted_median2, unsorted_mode2 = calculate_stats(data2)
+
+    print("\nSorted Data 1 Stats:")
+    print(f"Mean: {sorted_mean1}, Median: {sorted_median1}, Mode: {sorted_mode1}")
+    
+    print("\nSorted Data 2 Stats:")
+    print(f"Mean: {sorted_mean2}, Median: {sorted_median2}, Mode: {sorted_mode2}")
+
+    print("\nUnsorted Data 1 Stats:")
+    print(f"Mean: {unsorted_mean1}, Median: {unsorted_median1}, Mode: {unsorted_mode1}")
+
+    print("\nUnsorted Data 2 Stats:")
+    print(f"Mean: {unsorted_mean2}, Median: {unsorted_median2}, Mode: {unsorted_mode2}")
+
+    # Create box plots for both datasets
+    plt.figure(figsize=(10, 5))
+
+    plt.subplot(1, 2, 1)
+    box_and_whisker_plot(sorted_data1, "Sorted Data 1 Box Plot")
+
+    plt.subplot(1, 2, 2)
+    box_and_whisker_plot(sorted_data2, "Sorted Data 2 Box Plot")
+
+    plt.tight_layout()
+    plt.show()
+
+process_data()
