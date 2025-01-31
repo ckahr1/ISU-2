@@ -39,87 +39,88 @@ def get_data(label):
             print("Sorry, please enter numbers separated by commas. Try again.")
 
 def main():
-    print("Choose the type of graph you want to generate:")
-    print("1. Box Plot")
-    print("2. Histogram")
-    print("3. Scatter Plot (Needs two datasets)")
-    print("4. Compare Graphs")
-    print("5. Exit Calculator")
-
-    choice = input("Enter your choice (1-4): ")
-
-    if choice == '5':
-    print("Thank you for using Simple Stats Calculator. Bye!")
-    break
-
-    if choice == '1' or choice == '2':
-        data = get_data("dataset")
-        mean, median, mode = calculate_stats(data)
-        
-        print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
-        
-        if choice == '1':
-            plt.title("Box Plot")
-            box_and_whisker_plot(data)
-        elif choice == '2':
-            plt.title("Histogram")
-            histogram(data)
-        plt.show()
-    
-    elif choice == '3':
-        data1 = get_data("dataset 1")
-        data2 = get_data("dataset 2")
-        
-        mean1, median1, mode1 = calculate_stats(data1)
-        mean2, median2, mode2 = calculate_stats(data2)
-        
-        print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
-        print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
-        
-        plt.title("Scatter Plot")
-        scatter_plot(data1, data2)
-        plt.show()
-    
-    elif choice == '4':
-        print("Choose the type of graph for comparison:")
+    while True:
+        print("Simple Stats:")
         print("1. Box Plot")
         print("2. Histogram")
-        
-        graph_choice = input("Enter your choice (1-2): ")
-        
-        data1 = get_data("dataset 1")
-        data2 = get_data("dataset 2")
-        
-        mean1, median1, mode1 = calculate_stats(data1)
-        mean2, median2, mode2 = calculate_stats(data2)
-        
-        print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
-        print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
-        
-        plt.figure(figsize=(10, 5))
-        
-        if graph_choice == '1':
-            plt.subplot(1, 2, 1)
-            box_and_whisker_plot(data1)
-            plt.title("Box Plot - Dataset 1")
+        print("3. Scatter Plot (Needs two datasets)")
+        print("4. Compare Graphs")
+        print("5. Exit Calculator")
+
+        choice = input("Enter your choice (1-5): ")
+
+        if choice == '5':
+            print("Thank you for using Simple Stats Calculator. Bye!")
+            break
+
+        if choice == '1' or choice == '2':
+            data = get_data("dataset")
+            mean, median, mode = calculate_stats(data)
             
-            plt.subplot(1, 2, 2)
-            box_and_whisker_plot(data2)
-            plt.title("Box Plot - Dataset 2")
-        elif graph_choice == '2':
-            plt.subplot(1, 2, 1)
-            histogram(data1)
-            plt.title("Histogram - Dataset 1")
+            print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
             
-            plt.subplot(1, 2, 2)
-            histogram(data2)
-            plt.title("Histogram - Dataset 2")
+            if choice == '1':
+                plt.title("Box Plot")
+                box_and_whisker_plot(data)
+            elif choice == '2':
+                plt.title("Histogram")
+                histogram(data)
+            plt.show()
         
-        plt.tight_layout()
-        plt.show()
-    
-    else:
-        print("Invalid choice. Please try again.")
+        elif choice == '3':
+            data1 = get_data("dataset 1")
+            data2 = get_data("dataset 2")
+            
+            mean1, median1, mode1 = calculate_stats(data1)
+            mean2, median2, mode2 = calculate_stats(data2)
+            
+            print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+            print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+            
+            plt.title("Scatter Plot")
+            scatter_plot(data1, data2)
+            plt.show()
+        
+        elif choice == '4':
+            print("Choose the type of graph for comparison:")
+            print("1. Box Plot")
+            print("2. Histogram")
+            
+            graph_choice = input("Enter your choice (1-2): ")
+            
+            data1 = get_data("dataset 1")
+            data2 = get_data("dataset 2")
+            
+            mean1, median1, mode1 = calculate_stats(data1)
+            mean2, median2, mode2 = calculate_stats(data2)
+            
+            print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+            print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+            
+            plt.figure(figsize=(10, 5))
+            
+            if graph_choice == '1':
+                plt.subplot(1, 2, 1)
+                box_and_whisker_plot(data1)
+                plt.title("Box Plot - Dataset 1")
+                
+                plt.subplot(1, 2, 2)
+                box_and_whisker_plot(data2)
+                plt.title("Box Plot - Dataset 2")
+            elif graph_choice == '2':
+                plt.subplot(1, 2, 1)
+                histogram(data1)
+                plt.title("Histogram - Dataset 1")
+                
+                plt.subplot(1, 2, 2)
+                histogram(data2)
+                plt.title("Histogram - Dataset 2")
+            
+            plt.tight_layout()
+            plt.show()
+        
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main()
