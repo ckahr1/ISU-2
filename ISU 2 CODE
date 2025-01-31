@@ -1,63 +1,125 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
 def calculate_stats(data):
-    mean = np.mean(data)
-    median = np.median(data)
+    mean = sum(data) / len(data)
+    data.sort()
+    if len(data) % 2 == 0:
+        median = (data[len(data)//2 - 1] + data[len(data)//2]) / 2
+    else:
+        median = data[len(data)//2]
+    
     mode_result = stats.mode(data)
-    mode = mode_result.mode[0] if isinstance(mode_result.mode, np.ndarray) else mode_result.mode 
+    mode = mode_result.mode[0]
+    
     return mean, median, mode
 
-def box_and_whisker_plot(data, title):
+def box_and_whisker_plot(data):
     plt.boxplot(data)
-    plt.title(title)
     plt.xlabel('Data')
     plt.ylabel('Value')
 
-def process_data():
-    data_input = input("Enter two datasets separated by a semicolon (e.g., 5,8,7,4; 10,12,15): ")
+def histogram(data):
+    plt.hist(data, bins=10, edgecolor='black')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+
+def scatter_plot(data1, data2):
+    plt.scatter(data1, data2, color='red')
+    plt.xlabel('Dataset 1')
+    plt.ylabel('Dataset 2')
+
+def get_data(label):
+    while True:
+        data_input = input(f"Enter {label} (comma-separated numbers): ")
+        try:
+            data = [int(x) for x in data_input.split(',')]
+            return data
+        except ValueError:
+            print("Sorry, please enter numbers separated by commas. Try again.")
+
+def main():
+    print("Choose the type of graph you want to generate:")
+    print("1. Box Plot")
+    print("2. Histogram")
+    print("3. Scatter Plot (Needs two datasets)")
+    print("4. Compare Graphs")
+    print("5. Exit Calculator")
+
+    choice = input("Enter your choice (1-4): ")
+
+    if choice == '5':
+    print("Thank you for using Simple Stats Calculator. Bye!")
+    break
+
+    if choice == '1' or choice == '2':
+        data = get_data("dataset")
+        mean, median, mode = calculate_stats(data)
+        
+        print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
+        
+        if choice == '1':
+            plt.title("Box Plot")
+            box_and_whisker_plot(data)
+        elif choice == '2':
+            plt.title("Histogram")
+            histogram(data)
+        plt.show()
     
-    # Split the input into two separate datasets based on the semicolon
-    dataset1, dataset2 = data_input.split(';')
-
-    # Convert the string inputs to lists of integers
-    data1 = list(map(int, dataset1.split(',')))
-    data2 = list(map(int, dataset2.split(',')))
-
-    # Sort both datasets
-    sorted_data1 = sorted(data1)
-    sorted_data2 = sorted(data2)
-
-    # Calculate stats for both datasets
-    sorted_mean1, sorted_median1, sorted_mode1 = calculate_stats(sorted_data1)
-    sorted_mean2, sorted_median2, sorted_mode2 = calculate_stats(sorted_data2)
-
-    unsorted_mean1, unsorted_median1, unsorted_mode1 = calculate_stats(data1)
-    unsorted_mean2, unsorted_median2, unsorted_mode2 = calculate_stats(data2)
-
-    print("\nSorted Data 1 Stats:")
-    print(f"Mean: {sorted_mean1}, Median: {sorted_median1}, Mode: {sorted_mode1}")
+    elif choice == '3':
+        data1 = get_data("dataset 1")
+        data2 = get_data("dataset 2")
+        
+        mean1, median1, mode1 = calculate_stats(data1)
+        mean2, median2, mode2 = calculate_stats(data2)
+        
+        print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+        print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+        
+        plt.title("Scatter Plot")
+        scatter_plot(data1, data2)
+        plt.show()
     
-    print("\nSorted Data 2 Stats:")
-    print(f"Mean: {sorted_mean2}, Median: {sorted_median2}, Mode: {sorted_mode2}")
+    elif choice == '4':
+        print("Choose the type of graph for comparison:")
+        print("1. Box Plot")
+        print("2. Histogram")
+        
+        graph_choice = input("Enter your choice (1-2): ")
+        
+        data1 = get_data("dataset 1")
+        data2 = get_data("dataset 2")
+        
+        mean1, median1, mode1 = calculate_stats(data1)
+        mean2, median2, mode2 = calculate_stats(data2)
+        
+        print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+        print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+        
+        plt.figure(figsize=(10, 5))
+        
+        if graph_choice == '1':
+            plt.subplot(1, 2, 1)
+            box_and_whisker_plot(data1)
+            plt.title("Box Plot - Dataset 1")
+            
+            plt.subplot(1, 2, 2)
+            box_and_whisker_plot(data2)
+            plt.title("Box Plot - Dataset 2")
+        elif graph_choice == '2':
+            plt.subplot(1, 2, 1)
+            histogram(data1)
+            plt.title("Histogram - Dataset 1")
+            
+            plt.subplot(1, 2, 2)
+            histogram(data2)
+            plt.title("Histogram - Dataset 2")
+        
+        plt.tight_layout()
+        plt.show()
+    
+    else:
+        print("Invalid choice. Please try again.")
 
-    print("\nUnsorted Data 1 Stats:")
-    print(f"Mean: {unsorted_mean1}, Median: {unsorted_median1}, Mode: {unsorted_mode1}")
-
-    print("\nUnsorted Data 2 Stats:")
-    print(f"Mean: {unsorted_mean2}, Median: {unsorted_median2}, Mode: {unsorted_mode2}")
-
-    # Create box plots for both datasets
-    plt.figure(figsize=(10, 5))
-
-    plt.subplot(1, 2, 1)
-    box_and_whisker_plot(sorted_data1, "Sorted Data 1 Box Plot")
-
-    plt.subplot(1, 2, 2)
-    box_and_whisker_plot(sorted_data2, "Sorted Data 2 Box Plot")
-
-    plt.tight_layout()
-    plt.show()
-
-process_data()
+if __name__ == "__main__":
+    main()
