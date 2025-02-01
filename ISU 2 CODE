@@ -1,126 +1,247 @@
+import random
 import matplotlib.pyplot as plt
 from scipy import stats
+import numpy as np  
+
+
+def start_game():
+    print("\nYou stumble upon a Dragon’s Den and are forced to do a challenge!")
+    print("Your goal is to impress the mighty Dragon and prove your mastery of math!")
+   
+    score = dragon_den_challenge()
+
+    print(f"\nGame Over! Your final score: {score}")
+
+
+def dragon_den_challenge():
+    questions = [
+        {
+            "prompt": (
+                "\n** Dragon Question 1 **\n"
+                "Dragon: \"I hope you’ve been paying attention in math class!\"\n"
+                "The dragon is calculating the average number of sheeps it eats on its trips.\n"
+                "It ate 3 sheeps on the first trip, 5 on the second trip, 7 on the third trip, and 9 on the fourth trip.\n"
+                "What is the mean number of sheeps per trip?"
+            ),
+            "choices": {
+                "A": "5",
+                "B": "6",
+                "C": "4",
+                "D": "7"
+            },
+            "correct": "b",
+            "points": 20
+        },
+        {
+            "prompt": (
+                "\n** Dragon Question 2 **\n"
+                "The dragon recorded its flight durations (in minutes) during 5 flights: 8, 10, 12, 10, 14.\n"
+                "What is the median flight time?"
+            ),
+            "choices": {
+                "A": "10",
+                "B": "12",
+                "C": "14",
+                "D": "8"
+            },
+            "correct": "a",  
+            "points": 20
+        },
+        {
+            "prompt": (
+                "\n** Dragon Question 3 **\n"
+                "The dragon examines treasure chests filled with coins. The counts (per chest) are: 7, 7, 5, 7, 9.\n"
+                "What is the mode of the coin counts?"
+            ),
+            "choices": {
+                "A": "5",
+                "B": "7",
+                "C": "9",
+                "D": "None of the above"
+            },
+            "correct": "b",  
+            "points": 20
+        }
+    ]
+   
+    total_score = 0
+
+    for q in questions:
+        print(q["prompt"])
+        print("\nChoices:")
+
+        for letter, option in q["choices"].items():
+            print(f"{letter}) {option}")
+        answer = input("Enter your answer (A/B/C/D): ").strip().lower()
+
+        if answer == q["correct"]:
+            print("Correct! The dragon nods in approval.")
+            total_score += q["points"]
+        else:
+            print("Incorrect! The dragon frowns and breathes a little fire.")
+            total_score -= 10  
+
+    return total_score
+
 
 def calculate_stats(data):
-    mean = sum(data) / len(data)
-    data.sort()
-    if len(data) % 2 == 0:
-        median = (data[len(data)//2 - 1] + data[len(data)//2]) / 2
-    else:
-        median = data[len(data)//2]
-    
+    mean = np.mean(data)  
+    median = np.median(data)
     mode_result = stats.mode(data)
-    mode = mode_result.mode[0]
-    
+
+    if isinstance(mode_result.mode, np.ndarray):
+        mode = mode_result.mode[0] if mode_result.count[0] > 1 else "No mode"
+    else:
+        mode = mode_result.mode if mode_result.count > 1 else "No mode"
+
     return mean, median, mode
+
 
 def box_and_whisker_plot(data):
     plt.boxplot(data)
     plt.xlabel('Data')
     plt.ylabel('Value')
 
+
 def histogram(data):
     plt.hist(data, bins=10, edgecolor='black')
     plt.xlabel('Value')
     plt.ylabel('Frequency')
+
 
 def scatter_plot(data1, data2):
     plt.scatter(data1, data2, color='red')
     plt.xlabel('Dataset 1')
     plt.ylabel('Dataset 2')
 
+
+def pie_chart(data):
+    # Count the occurrences of each unique value in the dataset
+    unique_values, counts = np.unique(data, return_counts=True)
+    
+    # Plotting the pie chart
+    plt.pie(counts, labels=unique_values, autopct='%1.1f%%', startangle=90)
+    plt.axis('equal')  # Equal aspect ratio ensures that pie chart is drawn as a circle.
+    plt.title("Pie Chart")
+    plt.show()
+
+
 def get_data(label):
     while True:
         data_input = input(f"Enter {label} (comma-separated numbers): ")
         try:
             data = [int(x) for x in data_input.split(',')]
+            if len(data) == 0:
+                print("Error: Empty dataset! Please enter some data.")
+                continue
             return data
         except ValueError:
             print("Sorry, please enter numbers separated by commas. Try again.")
 
+
 def main():
     while True:
-        print("Simple Stats:")
+        print("\nWelcome to the Data Dungeon:")
         print("1. Box Plot")
         print("2. Histogram")
         print("3. Scatter Plot (Needs two datasets)")
-        print("4. Compare Graphs")
-        print("5. Exit Calculator")
+        print("4. Pie Chart")
+        print("5. Compare Graphs")
+        print("6. Fun Adventure")  
+        print("7. Exit Data Dungeon")
 
-        choice = input("Enter your choice (1-5): ")
+        choice = input("Enter your choice (1-7): ")
 
-        if choice == '5':
-            print("Thank you for using Simple Stats Calculator. Bye!")
+        if choice == '7':
+            print("Thank you for trying the Data Dungeon! Bye!")
             break
 
-        if choice == '1' or choice == '2':
+        if choice == '6':
+            start_game()  
+        elif choice == '1':
             data = get_data("dataset")
-            mean, median, mode = calculate_stats(data)
-            
-            print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
-            
-            if choice == '1':
+            try:
+                mean, median, mode = calculate_stats(data)
+                print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
                 plt.title("Box Plot")
                 box_and_whisker_plot(data)
-            elif choice == '2':
+                plt.show()
+            except ValueError as e:
+                print(e)
+        elif choice == '2':
+            data = get_data("dataset")
+            try:
+                mean, median, mode = calculate_stats(data)
+                print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
                 plt.title("Histogram")
                 histogram(data)
-            plt.show()
-        
+                plt.show()
+            except ValueError as e:
+                print(e)
+
         elif choice == '3':
             data1 = get_data("dataset 1")
             data2 = get_data("dataset 2")
-            
-            mean1, median1, mode1 = calculate_stats(data1)
-            mean2, median2, mode2 = calculate_stats(data2)
-            
-            print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
-            print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
-            
-            plt.title("Scatter Plot")
-            scatter_plot(data1, data2)
-            plt.show()
-        
-        elif choice == '4':
+            try:
+                mean1, median1, mode1 = calculate_stats(data1)
+                mean2, median2, mode2 = calculate_stats(data2)
+                print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+                print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+                plt.title("Scatter Plot")
+                scatter_plot(data1, data2)
+                plt.show()
+            except ValueError as e:
+                print(e)
+
+        elif choice == '5':
             print("Choose the type of graph for comparison:")
             print("1. Box Plot")
             print("2. Histogram")
-            
             graph_choice = input("Enter your choice (1-2): ")
-            
+            while graph_choice not in ['1', '2']:
+                print("Invalid choice. Please try again.")
+                graph_choice = input("Enter your choice (1-2): ")
             data1 = get_data("dataset 1")
             data2 = get_data("dataset 2")
-            
-            mean1, median1, mode1 = calculate_stats(data1)
-            mean2, median2, mode2 = calculate_stats(data2)
-            
-            print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
-            print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
-            
-            plt.figure(figsize=(10, 5))
-            
-            if graph_choice == '1':
-                plt.subplot(1, 2, 1)
-                box_and_whisker_plot(data1)
-                plt.title("Box Plot - Dataset 1")
-                
-                plt.subplot(1, 2, 2)
-                box_and_whisker_plot(data2)
-                plt.title("Box Plot - Dataset 2")
-            elif graph_choice == '2':
-                plt.subplot(1, 2, 1)
-                histogram(data1)
-                plt.title("Histogram - Dataset 1")
-                
-                plt.subplot(1, 2, 2)
-                histogram(data2)
-                plt.title("Histogram - Dataset 2")
-            
-            plt.tight_layout()
-            plt.show()
-        
+            try:
+                mean1, median1, mode1 = calculate_stats(data1)
+                mean2, median2, mode2 = calculate_stats(data2)
+                print(f"\nDataset 1 Stats:\nMean: {mean1}, Median: {median1}, Mode: {mode1}")
+                print(f"\nDataset 2 Stats:\nMean: {mean2}, Median: {median2}, Mode: {mode2}")
+                plt.figure(figsize=(10, 5))
+
+                if graph_choice == '1':
+                    plt.subplot(1, 2, 1)
+                    box_and_whisker_plot(data1)
+                    plt.title("Box Plot - Dataset 1")
+                    plt.subplot(1, 2, 2)
+                    box_and_whisker_plot(data2)
+                    plt.title("Box Plot - Dataset 2")
+
+                elif graph_choice == '2':
+                    plt.subplot(1, 2, 1)
+                    histogram(data1)
+                    plt.title("Histogram - Dataset 1")
+                    plt.subplot(1, 2, 2)
+                    histogram(data2)
+                    plt.title("Histogram - Dataset 2")
+                plt.tight_layout()
+                plt.show()
+            except ValueError as e:
+                print(e)
+
+        elif choice == '4':  
+            data = get_data("dataset")
+            try:
+                mean, median, mode = calculate_stats(data)
+                print(f"\nStats:\nMean: {mean}, Median: {median}, Mode: {mode}")
+                pie_chart(data)
+            except ValueError as e:
+                print(e)
+
         else:
             print("Invalid choice. Please try again.")
+
 
 if __name__ == "__main__":
     main()
