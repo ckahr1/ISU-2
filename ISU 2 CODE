@@ -128,15 +128,15 @@ def pie_chart(data):
 
 def get_data(label):
     while True:
-        data_input = input(f"Enter {label} (comma-separated numbers): ")
+        data_input = input(f"Enter {label} (comma-separated numbers, decimals allowed): ")
         try:
-            data = [int(x) for x in data_input.split(',')]
+            data = [float(x) for x in data_input.split(',')]
             if len(data) == 0:
                 print("Error: Empty dataset! Please enter some data.")
                 continue
             return data
         except ValueError:
-            print("Sorry, please enter numbers separated by commas. Try again.")
+            print("Sorry, please enter valid numbers separated by commas. Try again.")
 
 
 def main():
